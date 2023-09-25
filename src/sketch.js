@@ -67,23 +67,28 @@ function onMessage(event){
   var temp = value.split(',');
   var value1 = temp[0]
   var value2 = temp[1]
-
+  
   value3 = parseInt(value1);
   value4 = parseInt(value2);
 
   console.log('value3 ' + value3 + ' value4 ' + value4);
 
-  thickness = value3
-  thickness2 = value4
+  //thickness = value3
+  //thickness2 = value4
 
+  iAngle = value3
+  iDistance = value4
+
+  console.log(iAngle);
+  console.log(iDistance);
+  console.log("WEEE")
 
 
   //
   //value = parseInt(value); //use parseInt to convert the string into an integer
   //receivedData(value);
-
-
 }
+
 
 wsConnect()//CALLED wsConnect to get all the websocket stuff started
 
@@ -147,13 +152,18 @@ function draw() {
   //line(0,0,400,400)
   //text(thickness,20,20)
 
-  
+
   //stroke(98,245,31)
   //fill(98,245,31)
   //text(thickness,400,400)
-  console.log(thickness+100)
+
+  
+  //console.log(thickness+100)
+
   // line(thickness+300,500,400,400)
   // line(thickness2+300,500,400,400)
+  //console.log(iAngle)
+  //console.log(iDistance)
 
 
 }

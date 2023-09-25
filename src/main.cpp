@@ -22,7 +22,23 @@ WebServer webServer(80);//create a WebServer object, running at port 80
 #include "index.html"
 #include "sketch.js"
 
-//#include <string
+
+//---------SERVO CODE---------
+
+
+// Includes the Servo library
+//#include <Servo.h>
+#include <ESP32Servo.h>
+
+// Defines Trig and Echo pins of the Ultrasonic Sensor
+const int trigPin = 19;
+const int echoPin = 18;
+// Variables for the duration and the distance
+long duration;
+int distance;
+Servo myServo; // Creates a servo object for controlling the servo motor
+
+
 
 //--------------VARIABLES----------------
 
@@ -153,6 +169,21 @@ void webServer_setup() {
   Serial.println("WebSocket server started");
 }
 
+//-----------ULTRASONIC STUFF-------
+
+int calculateDistance(){ 
+  
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH); 
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
+  distance= duration*0.034/2;
+  return distance;
+}
+//-------------------------------
 
 
 
@@ -161,6 +192,15 @@ void setup() {
   //Serial.begin(115200);
   Serial.begin(9600);
   pinMode(ledPin, OUTPUT);
+
+  //SERVO/ULTRASONIC STUFF---------
+
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  Serial.begin(9600);
+  myServo.attach(13); // Defines on which pin is the servo motor attached
+
+  //--------------
 
   // Connect to wifi
   WiFi.begin(ssid, password);
@@ -193,21 +233,70 @@ if (WiFi.status() != WL_CONNECTED) {
   webSocket.loop();//starts the websocket loop going
   webServer.handleClient();//handles the client, it calls the functions set with webServer.on, ie. it calls the route handlers
 
+
+
+//--------------SERVO STUFF----------
+
+//rotates the servo motor from 15 to 165 degrees
+  for(int i=15;i<=165;i++){  
+  myServo.write(i);
+  delay(30);
+  distance = calculateDistance();// Calls a function for calculating the distance measured by the Ultrasonic sensor for each degree
+  
+  //Serial.print(" degreees: ");//remove
+  //Serial.print(i); // Sends the current degree into the Serial Port
+  //Serial.print(","); // Sends addition character right next to the previous value needed later in the Processing IDE for indexing
+  //Serial.print(" distanceee: ");
+  //Serial.print(distance); // Sends the distance value into the Serial Port
+  //Serial.print("."); // Sends addition character right next to the previous value needed later in the Processing IDE for indexing
+
+  String iTest = String(i);
+  String distanceTest = String(distance);
+  String value = (iTest + "," + distanceTest);
+  //Serial.print(" VALUE: ");
+  //Serial.print(value);
+  
+  //webSocket.sendTXT
+  webSocket.broadcastTXT(value);
+
+  }
+
+  //Repeats the previous lines from 165 to 15 degrees
+  for(int i=165;i>15;i--){  
+  myServo.write(i);
+  delay(30);
+  distance = calculateDistance();
+  //Serial.print(i);
+  //Serial.print(",");
+  //Serial.print(distance);
+  //Serial.print(".");
+
+  String iTest2 = String(i);
+  String distanceTest2 = String(distance);
+  String value2 = (iTest2 + "," + distanceTest2);
+  //webSocket.broadcastTXT(value2);
+
+  }
+
+
+//------------------------------------
+
   //String value = "55";
 
-
   //arduino values 
-  int a = 55;
-  int b = 200;
+  // int a = 55.5;
+  // int b = 200;
 
-  String atest = String(a);
-  String btest = String(b);
-  String value = (atest + "," + btest);
+  // String atest = String(a);
+  // String btest = String(b);
+  // String value = (atest + "," + btest);
 
   
+  // webSocket.broadcastTXT(value);//IMPORTANT, THIS IS WHERE THE VALUE IS ACTUALLY SENT THROUGH THE WEBSOCKET
+
 
   //Serial.println(value);
-  webSocket.broadcastTXT(value);
+
 
   //unsigned long currentMillis = millis();
 
