@@ -59,6 +59,15 @@ const char* password = "6047339749604";
 //this is a websocket SERVER, the websocket CLIENT will be in the web application javascript code
 WebSocketsServer webSocket = WebSocketsServer(81);
 
+
+String iTest;
+String distanceTest;
+String value;
+
+String iTest2;
+String distanceTest2;
+String value2;
+
 //---------------FUNCTIONS-----------------
 
 
@@ -250,9 +259,18 @@ if (WiFi.status() != WL_CONNECTED) {
   //Serial.print(distance); // Sends the distance value into the Serial Port
   //Serial.print("."); // Sends addition character right next to the previous value needed later in the Processing IDE for indexing
 
-  String iTest = String(i);
-  String distanceTest = String(distance);
-  String value = (iTest + "," + distanceTest);
+  // String iTest = String(i);
+  // String distanceTest = String(distance);
+  // String value = (iTest + "," + distanceTest);
+
+  iTest = String(i);
+  distanceTest = String(distance);
+  value = (iTest + "," + distanceTest);
+
+
+
+
+
   //Serial.print(" VALUE: ");
   //Serial.print(value);
   
@@ -271,10 +289,16 @@ if (WiFi.status() != WL_CONNECTED) {
   //Serial.print(distance);
   //Serial.print(".");
 
-  String iTest2 = String(i);
-  String distanceTest2 = String(distance);
-  String value2 = (iTest2 + "," + distanceTest2);
-  //webSocket.broadcastTXT(value2);
+  // String iTest2 = String(i);
+  // String distanceTest2 = String(distance);
+  // String value2 = (iTest2 + "," + distanceTest2);
+
+  iTest2 = String(i);
+  distanceTest2 = String(distance);
+  value2 = (iTest2 + "," + distanceTest2);
+
+
+  webSocket.broadcastTXT(value2);
 
   }
 

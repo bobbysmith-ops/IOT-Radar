@@ -15,11 +15,14 @@ var thickness
 var thickness2
 
 
+
 //---------websocket stuff-------//
 
 var websocket
 
-console.log('BRUUUUUH')
+var value
+
+//console.log('BRUUUUUH')
 
 // const websocket2= new WebSocket('ws://' + window.location.hostname + ':82/')
 // //console.log("ws://" + window.location.hostname + ":82/");
@@ -60,28 +63,31 @@ function onClose(event){
 
 function onMessage(event){
   console.log('websocket data: ' + event.data);
-  var value = String(event.data);
+  value = String(event.data);
 
   //two numbers code
 
   var temp = value.split(',');
-  var value1 = temp[0]
-  var value2 = temp[1]
-  
-  value3 = parseInt(value1);
-  value4 = parseInt(value2);
 
-  console.log('value3 ' + value3 + ' value4 ' + value4);
+  iAngle = parseInt(temp[0])
+  iDistance = parseInt(temp[1])
+
+  //value3 = parseInt(value1);
+  //value4 = parseInt(value2);
+
+
+
+  //console.log('value3 ' + value3 + ' value4 ' + value4);
 
   //thickness = value3
   //thickness2 = value4
 
-  iAngle = value3
-  iDistance = value4
+  //iAngle = value3
+  //iDistance = value4
 
-  console.log(iAngle);
-  console.log(iDistance);
-  console.log("WEEE")
+  //console.log(iAngle);
+  //console.log(iDistance);
+  //console.log("WEEE")
 
 
   //
@@ -99,15 +105,15 @@ console.log(websocket)
 //----------------p5.js stuff----------------//
 
 //this goes with the websocket stuff really, not sure if it needs to be down here for some reason
-function receivedData(data) {
-  //var value = map(data, 2200, 2800, 0, 30);
+// function receivedData(data) {
+//   //var value = map(data, 2200, 2800, 0, 30);
 
-  // var value = data //i think getting two values so value might need to be an array
-  // thickness = value;
-  // console.log(thickness)
+//   // var value = data //i think getting two values so value might need to be an array
+//   // thickness = value;
+//   // console.log(thickness)
 
 
-}
+// }
 
 
 
@@ -179,11 +185,11 @@ function draw() {
 
 
 
-function test1() {
-  //stroke(98,100,31);
-  //line(0,30,400,400)
-  background(0)
-}
+// function test1() {
+//   //stroke(98,100,31);
+//   //line(0,30,400,400)
+//   background(0)
+// }
 
 //draw arc and angle lines
 function drawRadar() {
