@@ -12,37 +12,25 @@ WebServer webServer(80);//create a WebServer object, running at port 80
 
 #include <WebSocketsServer.h>
 #include <Hash.h>
-//#include "Hash.h.h"
 
-//#include "index_html.h.html"
-//#include <sketch_js.h.js>
-//#include "sketch_js.h.js"
+//include additional source files
+#include "index.html"//basic html web page with p5.js animation window embedded in it
+#include "sketch.js"//javascript file containing p5.js animation 
 
-
-#include "index.html"
-#include "sketch.js"
-
-
-//---------SERVO CODE---------
-
-
-// Includes the Servo library
-//#include <Servo.h>
+// Make sure to include the ESP32 Servo library
 #include <ESP32Servo.h>
+
+//-----------------------VARIABLES---------------------------
 
 // Defines Trig and Echo pins of the Ultrasonic Sensor
 const int trigPin = 19;
 const int echoPin = 18;
+
 // Variables for the duration and the distance
 long duration;
 int distance;
+
 Servo myServo; // Creates a servo object for controlling the servo motor
-
-
-
-//--------------VARIABLES----------------
-
-const int ledPin = 5;
 
 // Generally, you should use "unsigned long" for variables that hold time
 unsigned long previousMillis = 0;
@@ -68,7 +56,7 @@ String iTest2;
 String distanceTest2;
 String value2;
 
-//---------------FUNCTIONS-----------------
+//-------------------FUNCTIONS----------------------
 
 
 //make my callback that runs everytime there's a websocket event
@@ -97,12 +85,6 @@ void webSocketEvent(uint8_t client_num, WStype_t type, uint8_t * payload, size_t
             // send message to client
             // webSocket.sendTXT(client_num, "Received");
 
-            // using strncmp to compare payload (an byte array) to a string
-            if (!strncmp((char *)payload, "on", length)) {
-              digitalWrite(ledPin, HIGH);
-            } else {
-              digitalWrite(ledPin, LOW);
-            }
             
             // send data to all connected clients
             // webSocket.broadcastTXT("message here");
@@ -178,7 +160,7 @@ void webServer_setup() {
   Serial.println("WebSocket server started");
 }
 
-//-----------ULTRASONIC STUFF-------
+//----------- ULTRASONIC SENSOR CODE ---------------
 
 int calculateDistance(){ 
   
@@ -192,24 +174,18 @@ int calculateDistance(){
   distance= duration*0.034/2;
   return distance;
 }
-//-------------------------------
+//------------------------------------------------
 
 
 
 void setup() {
 
-  //Serial.begin(115200);
   Serial.begin(9600);
-  pinMode(ledPin, OUTPUT);
-
-  //SERVO/ULTRASONIC STUFF---------
 
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-  Serial.begin(9600);
-  myServo.attach(13); // Defines on which pin is the servo motor attached
+  myServo.attach(13); // Defines which pin the servo motor is attached on
 
-  //--------------
 
   // Connect to wifi
   WiFi.begin(ssid, password);
@@ -237,14 +213,12 @@ if (WiFi.status() != WL_CONNECTED) {
     return;
   }
 
-  //printf("hiii");
 
-  webSocket.loop();//starts the websocket loop going
-  webServer.handleClient();//handles the client, it calls the functions set with webServer.on, ie. it calls the route handlers
-
+webSocket.loop();//starts the websocket loop going
+webServer.handleClient();//handles the client, it calls the functions set with webServer.on, ie. it calls the route handlers
 
 
-//--------------SERVO STUFF----------
+//--------------------- SERVO MOTOR CODE ----------------------
 
 //rotates the servo motor from 15 to 165 degrees
   for(int i=15;i<=165;i++){  
@@ -252,46 +226,22 @@ if (WiFi.status() != WL_CONNECTED) {
   delay(30);
   distance = calculateDistance();// Calls a function for calculating the distance measured by the Ultrasonic sensor for each degree
   
-  //Serial.print(" degreees: ");//remove
-  //Serial.print(i); // Sends the current degree into the Serial Port
-  //Serial.print(","); // Sends addition character right next to the previous value needed later in the Processing IDE for indexing
-  //Serial.print(" distanceee: ");
-  //Serial.print(distance); // Sends the distance value into the Serial Port
-  //Serial.print("."); // Sends addition character right next to the previous value needed later in the Processing IDE for indexing
-
-  // String iTest = String(i);
-  // String distanceTest = String(distance);
-  // String value = (iTest + "," + distanceTest);
 
   iTest = String(i);
   distanceTest = String(distance);
   value = (iTest + "," + distanceTest);
 
 
-
-
-
-  //Serial.print(" VALUE: ");
-  //Serial.print(value);
-  
-  //webSocket.sendTXT
-  webSocket.broadcastTXT(value);
+  //send current degree of servo (degrees) and distance from the ultrasonic sensor (distanceTest) together through the websocket to the javascript running in html page on desktop browser
+  webSocket.broadcastTXT(value);//IMPORTANT, THIS IS WHERE THE VALUE IS ACTUALLY SENT THROUGH THE WEBSOCKET
 
   }
 
-  //Repeats the previous lines from 165 to 15 degrees
+  //repeats the servo motor rotation from 165 to 15 degrees
   for(int i=165;i>15;i--){  
   myServo.write(i);
   delay(30);
   distance = calculateDistance();
-  //Serial.print(i);
-  //Serial.print(",");
-  //Serial.print(distance);
-  //Serial.print(".");
-
-  // String iTest2 = String(i);
-  // String distanceTest2 = String(distance);
-  // String value2 = (iTest2 + "," + distanceTest2);
 
   iTest2 = String(i);
   distanceTest2 = String(distance);
@@ -302,38 +252,5 @@ if (WiFi.status() != WL_CONNECTED) {
 
   }
 
-
-//------------------------------------
-
-  //String value = "55";
-
-  //arduino values 
-  // int a = 55.5;
-  // int b = 200;
-
-  // String atest = String(a);
-  // String btest = String(b);
-  // String value = (atest + "," + btest);
-
-  
-  // webSocket.broadcastTXT(value);//IMPORTANT, THIS IS WHERE THE VALUE IS ACTUALLY SENT THROUGH THE WEBSOCKET
-
-
-  //Serial.println(value);
-
-
-  //unsigned long currentMillis = millis();
-
-  // if (currentMillis - previousMillis >= interval) {
-    
-  //   // save the last time you blinked the LED
-  //   previousMillis = currentMillis;
-
-  //   //String value = String(analogRead(ldrPin));
-  //   String value = "hi";
-  //   // Serial.println(value);
-
-  //   webSocket.broadcastTXT(value);
-  // }
 
 }

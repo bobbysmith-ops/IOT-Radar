@@ -14,35 +14,15 @@ let orcFont;
 var thickness
 var thickness2
 
-
-
-//---------websocket stuff-------//
-
 var websocket
-
 var value
 
-//console.log('BRUUUUUH')
 
-// const websocket2= new WebSocket('ws://' + window.location.hostname + ':82/')
-// //console.log("ws://" + window.location.hostname + ":82/");
-// console.log(websocket2)
-
-// websocket2.addEventListener("open", (event)=>{
-//   websocket2.send("TEST2")
-// })
-
-// websocket2.addEventListener("message", (event) => {
-//   console.log("Message from server ", event.data);
-// });
-
-
-
+//sets up websocket, connects event handlers to websocket signals
 function wsConnect() {
 
-  
   // start a WebSocket
-  websocket = new WebSocket('ws://' + window.location.hostname + ':81/'); //note this is just appearing yellow bc of my weird comment notation thing
+  websocket = new WebSocket('ws://' + window.location.hostname + ':81/'); 
   console.log("ws://" + window.location.hostname + ":81/");
     
   websocket.onopen = function(event) { onOpen(event) }
@@ -65,137 +45,52 @@ function onMessage(event){
   console.log('websocket data: ' + event.data);
   value = String(event.data);
 
-  //two numbers code
 
   var temp = value.split(',');
 
   iAngle = parseInt(temp[0])
   iDistance = parseInt(temp[1])
 
-  //value3 = parseInt(value1);
-  //value4 = parseInt(value2);
-
-
-
-  //console.log('value3 ' + value3 + ' value4 ' + value4);
-
-  //thickness = value3
-  //thickness2 = value4
-
-  //iAngle = value3
-  //iDistance = value4
-
-  //console.log(iAngle);
-  //console.log(iDistance);
-  //console.log("WEEE")
-
-
-  //
-  //value = parseInt(value); //use parseInt to convert the string into an integer
-  //receivedData(value);
 }
 
 
-wsConnect()//CALLED wsConnect to get all the websocket stuff started
+wsConnect()//call to start websocket operations
 
 console.log(websocket)
 
 
 
-//----------------p5.js stuff----------------//
-
-//this goes with the websocket stuff really, not sure if it needs to be down here for some reason
-// function receivedData(data) {
-//   //var value = map(data, 2200, 2800, 0, 30);
-
-//   // var value = data //i think getting two values so value might need to be an array
-//   // thickness = value;
-//   // console.log(thickness)
-
-
-// }
-
-
+//--------------------- P5.JS CODE FOR ANIMATION ----------------------//
 
 
 
 function setup() {
-  //createCanvas(400, 400);
-  //createCanvas(windowWidth, windowHeight);
   createCanvas(1200,700);// this sets width=1200, height=700
   smooth()
-
-
 
 }
 
 
-
-
-
+//p5.js animation function
 function draw() {
-  background(0);//background is a bit misleading name, it really just means cover the canvas in this color
-  //fill(98,245,31) //bright green
-
-  //fill(0,4)
-  //rect(0, 0, width, height-height*0.065);
-  //stroke(200,0,0)
-  //stroke(98,245,31)
-  //line(0,0,1200,700)
-
-  //translate(600,675) //if i want to manually position,this is probly the good one
+  background(0);//cover canvas in black
 
   stroke(98,245,31)
-  //line(thickness,0,200,200)
-  //text(value,20,20)
 
   drawRadar()
   drawLine()
   drawObject()
   drawText()
-
-  //test1()
-  //line(0,0,400,400)
-  //text(thickness,20,20)
-
-
-  //stroke(98,245,31)
-  //fill(98,245,31)
-  //text(thickness,400,400)
-
-  
-  //console.log(thickness+100)
-
-  // line(thickness+300,500,400,400)
-  // line(thickness2+300,500,400,400)
-  //console.log(iAngle)
-  //console.log(iDistance)
-
-
 }
 
 
-// //this goes with the websocket stuff really, not sure if it needs to be down here for some reason
-// function receivedData(data) {
-//   //var value = map(data, 2200, 2800, 0, 30);
-//   var value = data //i think getting two values so value might need to be an array
-//   var thickness = value;
-//   console.log(thickness)
-// }
 
 
-
-// function test1() {
-//   //stroke(98,100,31);
-//   //line(0,30,400,400)
-//   background(0)
-// }
 
 //draw arc and angle lines
 function drawRadar() {
   push();
   translate(width/2,height-height*0.074); // moves the starting coordinates to new location
-  //translate(600,675)
   noFill();
   strokeWeight(2);//thicken lines
   stroke(98,245,31);//set color for lines to green
@@ -208,7 +103,7 @@ function drawRadar() {
   
   // draws the angle lines
   line(-width/2,0,width/2,0);//draw horizontal line at base of radar
-  line(0,0,(-width/2)*cos(radians(30)),(-width/2)*sin(radians(30)));//use trig to get coordinate for 2nd point on line
+  line(0,0,(-width/2)*cos(radians(30)),(-width/2)*sin(radians(30)));
   line(0,0,(-width/2)*cos(radians(60)),(-width/2)*sin(radians(60)));
   line(0,0,(-width/2)*cos(radians(90)),(-width/2)*sin(radians(90)));
   line(0,0,(-width/2)*cos(radians(120)),(-width/2)*sin(radians(120)));
@@ -220,7 +115,7 @@ function drawRadar() {
 //draws the red blocks that represent the object seen by the ultrasonic sensor
 function drawObject() {
   push();
-  translate(width/2,height-height*0.074); // moves the starting coordinates to new location
+  translate(width/2,height-height*0.074);
   strokeWeight(9);
   stroke(255,10,10); // red color
   pixsDistance = iDistance*((height-height*0.1666)*0.025); // converts the distance from the sensor from cm to pixels
