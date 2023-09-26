@@ -232,7 +232,7 @@ webServer.handleClient();//handles the client, it calls the functions set with w
   value = (iTest + "," + distanceTest);
 
 
-  //send current degree of servo (degrees) and distance from the ultrasonic sensor (distanceTest) together through the websocket to the javascript running in html page on desktop browser
+  //send current degree of servo (iTest) and distance from the ultrasonic sensor (distanceTest) together through the websocket to the javascript running in html page on desktop browser
   webSocket.broadcastTXT(value);//IMPORTANT, THIS IS WHERE THE VALUE IS ACTUALLY SENT THROUGH THE WEBSOCKET
 
   }
